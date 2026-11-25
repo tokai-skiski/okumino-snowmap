@@ -1,0 +1,39 @@
+name: 積雪データの読み取り
+
+on:
+  schedule:
+    # 日本時間 6:00 / 7:30 / 10:00 / 13:00(GitHubの時刻はUTC=日本時間-9時間)
+    - cron: '0 21 * * *'
+    - cron: '30 22 * * *'
+    - cron: '0 1 * * *'
+    - cron: '0 4 * * *'
+  workflow_dispatch: {}   # 手動でも動かせる
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: 公式サイトを読み取る
+        run: python scrape.py docs/snow.json
+      - name: 地図ページを作り直す
+        run: python build_site.py
+      - name: 結果を保存する
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git diff --cached --quiet || git commit -m "データ更新 $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M')"
+          git push

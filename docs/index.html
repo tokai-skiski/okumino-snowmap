@@ -1,0 +1,309 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>奥美濃スキー場 積雪・営業状況マップ(データ確認用)</title><style>body{margin:0;padding:12px 16px;background:#F4F8FC}</style></head><body><!-- 奥美濃スキー場 積雪・営業マップ(試作版) WordPressのカスタムHTMLブロックに貼る想定 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+#snowmap{--sm-ink:#1C2733;--sm-sub:#556372;--sm-line:#DCE6F0;--sm-bg:#fff;--sm-soft:#F4F8FC;--sm-navy:#0B3B66;--sm-pale:#E6F0FA;--sm-cta:#C2410C;--sm-shadow:0 2px 10px rgba(11,59,102,.08);--sm-open:#1a7f4b;--sm-open-bg:#e3f4ea;--sm-closed:#6b7480;--sm-closed-bg:#eef0f3;--sm-warn:#a15c00;--sm-warn-bg:#fff3df;--sm-accent:#1E6FB8;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;color:var(--sm-ink);background:var(--sm-bg);line-height:1.6;max-width:760px;margin:0 auto;font-size:15px}
+#snowmap *{box-sizing:border-box}
+#snowmap .sm-head{margin:0 0 10px}
+#snowmap .sm-title{font-size:19px;font-weight:900;color:var(--sm-navy);margin:0 0 2px;line-height:1.4}
+#snowmap .sm-gen{font-size:12.5px;color:var(--sm-sub)}
+#snowmap .sm-controls{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+#snowmap .sm-chip{border:1px solid var(--sm-line);background:var(--sm-bg);color:var(--sm-ink);border-radius:999px;padding:6px 13px;font-size:13.5px;cursor:pointer;line-height:1.3}
+#snowmap .sm-chip{font-weight:700;color:var(--sm-navy)}
+#snowmap .sm-chip[aria-pressed="true"]{background:var(--sm-navy);color:#fff;border-color:var(--sm-navy)}
+#snowmap .sm-map{height:300px;border-radius:14px;box-shadow:var(--sm-shadow);border:1px solid var(--sm-line);z-index:0}
+#snowmap .sm-dot{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+#snowmap .sm-pin{position:absolute;top:-11px;border-radius:6px;padding:1px 6px;font-size:11.5px;font-weight:700;color:#fff;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.35);line-height:1.6}
+#snowmap .sm-pin.r{left:9px}
+#snowmap .sm-pin.l{right:9px}
+#snowmap .sm-pin.u{top:auto;bottom:9px;left:0;transform:translateX(-50%)}
+#snowmap .open{--c:var(--sm-open)} #snowmap .closed{--c:var(--sm-closed)} #snowmap .err{--c:var(--sm-warn)}
+#snowmap .sm-dot,#snowmap .sm-pin{background:var(--c)}
+#snowmap .sm-pin small{font-weight:400;font-size:10.5px;margin-left:3px}
+#snowmap .sm-list{display:flex;flex-direction:column;gap:10px;margin:12px 0}
+#snowmap .sm-card{border:1px solid var(--sm-line);border-radius:14px;box-shadow:var(--sm-shadow);padding:12px 13px;background:var(--sm-bg);scroll-margin-top:70px}
+#snowmap .sm-card.hl{outline:2px solid #4FA3E0}
+#snowmap .sm-row1{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#snowmap .sm-name{font-weight:900;font-size:16px;margin:0;color:var(--sm-navy)}
+#snowmap .sm-badge{font-size:12.5px;font-weight:700;border-radius:6px;padding:2px 8px;white-space:nowrap}
+#snowmap .sm-badge.open{background:var(--sm-open-bg);color:var(--sm-open)}
+#snowmap .sm-badge.closed{background:var(--sm-closed-bg);color:var(--sm-closed)}
+#snowmap .sm-badge.err{background:var(--sm-warn-bg);color:var(--sm-warn)}
+#snowmap .sm-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px 0 6px}
+#snowmap .sm-stat-wx .sm-wx{display:block;margin:-2px auto -3px}
+#snowmap .sm-stat-wx span{display:block;line-height:1.3;word-break:keep-all;overflow-wrap:anywhere}
+#snowmap .sm-stat{background:var(--sm-soft);border:1px solid var(--sm-line);border-radius:10px;padding:6px 4px;text-align:center}
+#snowmap .sm-stat b{display:block;font-size:17px;line-height:1.3;color:var(--sm-navy)}
+#snowmap .sm-stat span{font-size:11.5px;color:var(--sm-sub)}
+#snowmap .sm-note{font-size:13px;margin:4px 0 0}
+#snowmap .sm-meta{font-size:12px;color:var(--sm-sub);margin:4px 0 0}
+#snowmap .sm-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+#snowmap .sm-btn{flex:1 1 30%;min-width:96px;min-height:44px;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;border-radius:12px;padding:8px 6px;font-size:13.5px;font-weight:700;border:1px solid var(--sm-pale);color:var(--sm-navy)!important;background:var(--sm-pale)}
+#snowmap .sm-btn:hover{border-color:var(--sm-accent)}
+#snowmap .sm-btn.main{background:var(--sm-accent);border-color:var(--sm-accent);color:#fff!important}
+#snowmap .sm-btn.main:hover{background:var(--sm-navy)}
+#snowmap .sm-btn.hotel{background:var(--sm-cta);border-color:var(--sm-cta);color:#fff!important}
+#snowmap .sm-btn.hotel:hover{background:#9A3412}
+#snowmap .sm-box{background:var(--sm-pale);border-radius:14px;padding:12px 13px;margin:12px 0;font-size:13.5px}
+#snowmap .sm-box h3{font-size:14.5px;margin:0 0 6px;color:var(--sm-navy);font-weight:900}
+#snowmap .sm-box ul{margin:0;padding-left:1.2em}
+#snowmap .sm-fine{font-size:12px;color:var(--sm-sub);margin:10px 0 0}
+#snowmap .sm-fine a,#snowmap .sm-box a{color:var(--sm-accent)}
+#snowmap .sm-namewrap{display:flex;align-items:center;gap:6px}
+#snowmap .sm-namewrap .sm-wx{flex:none}
+#snowmap .sm-open{font-size:14px;font-weight:700;margin:6px 0 0;color:var(--sm-navy)}
+#snowmap .sm-open small{font-weight:400;color:var(--sm-sub);font-size:11.5px;margin-left:4px}
+#snowmap .sm-news{font-size:13px;margin:6px 0 0;padding:6px 9px;background:var(--sm-warn-bg);border-radius:7px}
+#snowmap .sm-news a{color:var(--sm-ink)}
+#snowmap .sm-week{display:flex;gap:4px;overflow-x:auto;padding:2px 0 6px;-webkit-overflow-scrolling:touch}
+#snowmap .sm-day{flex:1 0 62px;background:var(--sm-bg);border-radius:10px;padding:6px 2px;text-align:center;font-size:12px;line-height:1.35}
+#snowmap .sm-day .d{display:block;font-weight:700;font-size:12.5px}
+#snowmap .sm-day .d.sat{color:#1f6fd1}
+#snowmap .sm-day .d.sun{color:#c62828}
+#snowmap .sm-day .l{display:block;font-size:11px;color:var(--sm-sub);min-height:2.7em}
+#snowmap .sm-day .p{display:block;color:#2f80d1;font-weight:700}
+#snowmap .sm-day .sm-wx{display:block;margin:2px auto}
+@media (max-width:420px){#snowmap .sm-stat b{font-size:15.5px}#snowmap .sm-map{height:260px}}
+</style>
+
+<div id="snowmap">
+  <div class="sm-head">
+    <p class="sm-title">奥美濃スキー場 いまの積雪・営業状況マップ</p>
+    <div class="sm-gen" id="sm-gen">読み込み中…</div>
+  </div>
+  <div class="sm-controls" role="group" aria-label="絞り込みと並べ替え">
+    <button class="sm-chip" data-filter="all" aria-pressed="true">すべて</button>
+    <button class="sm-chip" data-filter="open" aria-pressed="false">今日滑れる</button>
+    <button class="sm-chip" data-sort="drive" aria-pressed="true">名古屋から近い順</button>
+    <button class="sm-chip" data-sort="snow" aria-pressed="false">積雪が多い順</button>
+  </div>
+  <div class="sm-map" id="sm-map" aria-label="スキー場の地図"></div>
+  <div class="sm-list" id="sm-list"></div>
+  <div class="sm-box" id="sm-jma"></div>
+  <p class="sm-fine">
+    積雪・気温・リフトとコースの状況は、各スキー場の公式サイトに載っている発表を1日4回(6:00・7:30・10:00・13:00ごろ)自動で読み取ったものです。
+    スキー場の発表の更新時刻はカードの「公式の更新」に表示しています。お出かけ前に、必ず公式サイトで最新情報を確認してください。
+    名古屋駅からの時間はGoogleマップの目安(2026年11月23日調べ、渋滞・雪道は含みません)です。
+    天気予報と観測値の出典:<a href="https://www.jma.go.jp/" target="_blank" rel="noopener">気象庁</a>。
+  </p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function(){
+  var DATA_URL = 'snow.json'; // GitHub Pages で公開しているデータ
+  var SITE = 'https://tokai-ski-snowboard.com';
+  // 地図のラベル(短い名前と、点の左右どちらに出すか)
+  var PIN = {takasu:{s:'高鷲',d:'r'}, dyna:{s:'ダイナ',d:'l'}, washi:{s:'鷲ヶ岳',d:'l'}, hirugano:{s:'ひるがの',d:'u'},
+             whitepia:{s:'ホワイトピア',d:'r'}, meiho:{s:'めいほう',d:'l'}, wing:{s:'ウイング',d:'l'}, swp:{s:'白鳥高原',d:'r'}};
+  var state = {filter:'all', sort:'drive', data:null, markers:{}};
+  var $ = function(id){return document.getElementById(id);};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  // ===== 天気のイラスト(自作SVG) =====
+  var WX_JP = {sun:'晴', cloud:'曇', rain:'雨', snow:'雪', sleet:'雨か雪', thunder:'雷', fog:'霧'};
+  function wxShape(t){
+    var cloud = function(fill){ return '<path d="M18 44h30a10 10 0 0 0 0-20 14 14 0 0 0-27-3A11 11 0 0 0 18 44z" fill="'+fill+'"/>'; };
+    var sun = '<g stroke="#f2a516" stroke-width="4" stroke-linecap="round">'+
+      [0,45,90,135,180,225,270,315].map(function(a){var r=a*Math.PI/180,c=Math.cos(r),s=Math.sin(r);
+        return '<line x1="'+(32+19*c).toFixed(1)+'" y1="'+(32+19*s).toFixed(1)+'" x2="'+(32+26*c).toFixed(1)+'" y2="'+(32+26*s).toFixed(1)+'"/>';}).join('')+
+      '</g><circle cx="32" cy="32" r="13" fill="#f7b928"/>';
+    var drops = '<g stroke="#2f80d1" stroke-width="3.5" stroke-linecap="round"><line x1="24" y1="49" x2="21" y2="57"/><line x1="34" y1="49" x2="31" y2="57"/><line x1="44" y1="49" x2="41" y2="57"/></g>';
+    var flake = function(x,y){ return '<g stroke="#4aa3df" stroke-width="2.6" stroke-linecap="round" transform="translate('+x+' '+y+')"><line x1="0" y1="-5" x2="0" y2="5"/><line x1="-4.3" y1="-2.5" x2="4.3" y2="2.5"/><line x1="-4.3" y1="2.5" x2="4.3" y2="-2.5"/></g>'; };
+    switch(t){
+      case 'sun': return sun;
+      case 'cloud': return '<g transform="translate(0 4)">'+cloud('#a9b4c0')+'</g>';
+      case 'rain': return '<g transform="translate(0 -4)">'+cloud('#8d99a6')+'</g>'+drops;
+      case 'snow': return '<g transform="translate(0 -4)">'+cloud('#b7c3cf')+'</g>'+flake(22,53)+flake(34,55)+flake(46,53);
+      case 'sleet': return '<g transform="translate(0 -4)">'+cloud('#99a5b2')+'</g><g stroke="#2f80d1" stroke-width="3.5" stroke-linecap="round"><line x1="24" y1="49" x2="21" y2="57"/><line x1="44" y1="49" x2="41" y2="57"/></g>'+flake(33,54);
+      case 'thunder': return '<g transform="translate(0 -4)">'+cloud('#7d8996')+'</g><path d="M34 44l-7 10h6l-4 9 10-12h-6l4-7z" fill="#f2a516"/>';
+      case 'fog': return '<g stroke="#a9b4c0" stroke-width="4" stroke-linecap="round"><line x1="12" y1="24" x2="52" y2="24"/><line x1="8" y1="34" x2="48" y2="34"/><line x1="14" y1="44" x2="54" y2="44"/></g>';
+    }
+    return '';
+  }
+  // w = {main, sub, conn('時々' か 'のち')}
+  function wxIcon(w, size){
+    size = size || 44;
+    if(!w || !w.main) return '';
+    var body;
+    if(!w.sub) body = wxShape(w.main);
+    else if(w.conn==='のち') body = '<g transform="translate(-2 -2) scale(.6)">'+wxShape(w.main)+'</g>'+
+        '<path d="M28 33h7m-3-3l3 3-3 3" stroke="#6b7480" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+
+        '<g transform="translate(27 26) scale(.6)">'+wxShape(w.sub)+'</g>';
+    else body = '<g transform="translate(-1 -1) scale(.78)">'+wxShape(w.main)+'</g><g transform="translate(29 29) scale(.55)">'+wxShape(w.sub)+'</g>';
+    return '<svg class="sm-wx" width="'+size+'" height="'+size+'" viewBox="0 0 64 64" role="img" aria-label="'+esc(wxLabel(w))+'">'+body+'</svg>';
+  }
+  function wxLabel(w){ if(!w||!w.main) return ''; return WX_JP[w.main]+(w.sub?(w.conn==='のち'?'のち':'時々')+WX_JP[w.sub]:''); }
+  // 気象庁の天気コード → イラスト
+  function wxFromCode(code){
+    var c=+code, m=Math.floor(c/100), r=c%100, main={1:'sun',2:'cloud',3:'rain',4:'snow'}[m];
+    if(!main) return null;
+    var W=function(sub,conn){return {main:main,sub:sub||null,conn:conn||'時々'};};
+    if(m===1||m===2){
+      var other = m===1?'cloud':'sun';
+      if(c===209) return {main:'fog'};
+      var T={1:[other],2:['rain'],3:['rain'],4:['snow'],5:['snow'],6:['sleet'],7:['sleet'],8:['thunder'],
+             10:[other,'のち'],11:[other,'のち'],12:['rain','のち'],13:['rain','のち'],14:['rain','のち'],15:['snow','のち'],
+             16:['snow','のち'],17:['snow','のち'],18:['sleet','のち'],19:['thunder','のち'],20:['rain'],21:['rain'],22:['rain'],
+             23:[m===1?'thunder':'sun'],24:[m===1?'snow':'rain', m===1?'時々':'のち'],25:[m===1?'thunder':'rain', m===1?'時々':'のち'],
+             26:['rain','のち'],27:['rain','のち'],28:[m===1?'rain':'snow','のち'],29:['snow','のち'],30:[m===1?'sun':'snow','のち'],
+             32:['cloud'],40:['thunder'],50:['snow'],60:['sleet'],70:['sleet'],81:['sleet']}[r];
+      return T ? W(T[0],T[1]) : W();
+    }
+    if(m===3){
+      if(c===304||c===340) return {main:'sleet'};
+      var R={1:['sun'],3:['snow'],9:['snow'],11:['sun','のち'],13:['cloud','のち'],14:['snow','のち'],15:['snow','のち'],
+             16:['sun','のち'],17:['cloud','のち'],20:['sun','のち'],21:['cloud','のち'],22:['snow'],23:['sun','のち'],24:['sun','のち'],
+             25:['sun','のち'],26:['snow','のち'],27:['snow','のち'],29:['sleet'],50:['thunder'],61:['sun','のち'],71:['cloud','のち']}[r];
+      return R ? W(R[0],R[1]) : W();
+    }
+    var S={1:['sun'],3:['rain'],9:['rain'],11:['sun','のち'],13:['cloud','のち'],14:['rain','のち'],20:['sun','のち'],21:['cloud','のち'],
+           22:['rain','のち'],23:['rain','のち'],26:['sleet','のち'],27:['sleet'],50:['thunder']}[r];
+    return S ? W(S[0],S[1]) : W();
+  }
+  // スキー場が書いた天気の文字(「小雪」「雪時々くもり」など)→ イラスト
+  function wxFromText(t){
+    if(!t) return null;
+    var keys=[['sleet',/みぞれ|雨か雪|雪か雨/],['thunder',/雷/],['snow',/雪/],['rain',/雨/],['cloud',/曇|くもり/],['sun',/晴/],['fog',/霧/]];
+    var found=[];
+    keys.forEach(function(k){var m=t.match(k[1]); if(m) found.push([m.index,k[0]]);});
+    if(!found.length) return null;
+    found.sort(function(a,b){return a[0]-b[0];});
+    var types=[];
+    found.forEach(function(f){
+      if(types.indexOf(f[1])>=0) return;
+      if((f[1]==='snow'||f[1]==='rain') && types.indexOf('sleet')>=0) return;
+      types.push(f[1]);
+    });
+    return {main:types[0], sub:types[1]||null, conn:/のち|後/.test(t)?'のち':'時々'};
+  }
+
+  var WD='日月火水木金土';
+  function mdw(iso, noWd){ var d=new Date(iso+'T00:00:00+09:00'); return (d.getMonth()+1)+'月'+d.getDate()+'日'+(noWd?'':'('+WD[d.getDay()]+')'); }
+  function hm(m){return Math.floor(m/60)+'時間'+(m%60?(m%60)+'分':'');}
+  function kind(r){return !r.ok?'err':(r.open?'open':'closed');}
+  function badge(r){
+    if(!r.ok) return '読み取れませんでした';
+    if(r.open) return r.status_text && r.status_text.indexOf('一部')>=0 ? '営業中(一部滑走可)' : '営業中';
+    return '営業前';
+  }
+  function snowText(r){ return (r.snow_cm==null || (!r.open && !r.snow_cm)) ? '—' : Math.round(r.snow_cm)+'<small style="font-size:12px">cm</small>'; }
+  function tempText(r){ return (r.temp_c==null || !r.open) ? '—' : r.temp_c+'<small style="font-size:12px">℃</small>'; }
+  function liftText(r){ return r.lifts_total ? (r.lifts_open||0)+'<small style="font-size:12px">/'+r.lifts_total+'基</small>' : '—'; }
+  function courseText(r){ return r.courses_open==null ? '—' : r.courses_open+'<small style="font-size:12px">本</small>'; }
+
+  function card(r){
+    var k=kind(r), note='';
+    if(!r.ok) note='<p class="sm-note">いまは数値を読み取れません。公式サイトで確認してください。</p>';
+    else if(!r.open && r.open_date){
+      var od=new Date(r.open_date+'T00:00:00+09:00'), today=new Date(state.data.generated.slice(0,10)+'T00:00:00+09:00');
+      note = od<=today
+        ? '<p class="sm-open">オープン予定日('+mdw(r.open_date)+')を過ぎています。公式サイトで確認してください</p>'
+        : '<p class="sm-open">オープン予定 '+mdw(r.open_date)+'<small>('+esc(r.open_date_src)+')</small></p>';
+    }
+    if(r.ok && r.news && r.news.title){
+      note += '<p class="sm-news">公式のお知らせ'+(r.news.date?'('+mdw(r.news.date,true)+')':'')+':<a href="'+esc(r.news.url)+'" target="_blank" rel="noopener">'+esc(r.news.title)+'</a></p>';
+    }
+    var wx = r.ok && r.open ? wxFromText(r.weather) : null;
+    return '<div class="sm-card" id="sm-c-'+r.id+'">'+
+      '<div class="sm-row1"><p class="sm-name">'+esc(r.name)+'</p><span class="sm-badge '+k+'">'+badge(r)+'</span></div>'+
+      '<div class="sm-stats">'+
+        '<div class="sm-stat sm-stat-wx">'+(wx?wxIcon(wx,30):'<b>—</b>')+'<span>'+(wx?esc(r.weather):'天気')+'</span></div>'+
+        '<div class="sm-stat"><b>'+snowText(r)+'</b><span>積雪'+(r.snow_where?'('+esc(r.snow_where)+')':'')+'</span></div>'+
+        '<div class="sm-stat"><b>'+tempText(r)+'</b><span>気温'+(r.temp_where?'('+esc(r.temp_where)+')':'')+'</span></div>'+
+        '<div class="sm-stat"><b>'+liftText(r)+'</b><span>リフト</span></div>'+
+        '<div class="sm-stat"><b>'+courseText(r)+'</b><span>コース</span></div>'+
+      '</div>'+ note +
+      '<p class="sm-meta">名古屋駅から車で約'+hm(r.drive)+
+        ' / 公式の更新:'+(r.site_updated?esc(r.site_updated):'記載なし')+'</p>'+
+      '<div class="sm-btns">'+
+        '<a class="sm-btn main" href="'+esc(r.source)+'" target="_blank" rel="noopener">公式サイト</a>'+
+        '<a class="sm-btn" href="'+SITE+esc(r.article)+'">紹介記事</a>'+
+        '<a class="sm-btn hotel" href="'+SITE+esc(r.hotel)+'">近くの宿</a>'+
+      '</div></div>';
+  }
+
+  function visible(){
+    var rs = state.data.resorts.filter(function(r){return state.filter==='all' || (r.ok && r.open);});
+    rs.sort(function(a,b){
+      if(state.sort==='snow') return (b.open-a.open) || (b.snow_cm||0)-(a.snow_cm||0) || a.drive-b.drive;
+      return a.drive-b.drive;
+    });
+    return rs;
+  }
+
+  function render(){
+    var rs=visible();
+    $('sm-list').innerHTML = rs.length ? rs.map(card).join('') :
+      '<div class="sm-box">いま営業中のスキー場はありません。各スキー場のオープン予定はカードに表示しています。</div>';
+    Object.keys(state.markers).forEach(function(id){
+      var show = rs.some(function(r){return r.id===id;});
+      state.markers[id].setOpacity(show?1:0.25);
+    });
+  }
+
+  function jmaBox(j){
+    var h='<h3>週間天気予報(気象庁・岐阜県美濃地方)</h3>';
+    if(j && j.forecast && j.forecast.days.length){
+      var today=state.data.generated.slice(0,10);
+      h+='<div class="sm-week">'+j.forecast.days.map(function(d,i){
+        var dt=new Date(d.date+'T00:00:00+09:00'), wd=dt.getDay(), w=wxFromCode(d.code);
+        var name = d.date===today ? '今日' : (i===1 && d.date>today ? '明日' : WD[wd]);
+        return '<div class="sm-day"><span class="d'+(wd===6?' sat':wd===0?' sun':'')+'">'+name+'</span>'+
+          '<span style="display:block">'+(dt.getMonth()+1)+'/'+dt.getDate()+'</span>'+wxIcon(w,40)+
+          '<span class="l">'+esc(wxLabel(w))+'</span><span class="p">'+(d.pop==null?'—':d.pop+'%')+'</span></div>';
+      }).join('')+'</div>'+
+      '<p class="sm-meta">青い数字は降水確率(雨か雪が降る確率)。'+esc(j.forecast.report)+' 気象庁発表。予報は美濃地方全体のもので、山の上はふもとより天気が崩れやすく、雨の予報でも雪になることがあります。</p>';
+    } else h+='<p>予報を読み込めませんでした。<a href="https://www.jma.go.jp/bosai/forecast/#area_type=offices&area_code=210000" target="_blank" rel="noopener">気象庁の岐阜県の予報</a>をご覧ください。</p>';
+    if(j && j.amedas){
+      h+='<h3 style="margin-top:10px">ふもとの観測(アメダス)</h3><p style="margin:0">'+esc(j.amedas.name)+':気温 '+
+        (j.amedas.temp_c==null?'—':j.amedas.temp_c+'℃')+'、積雪 '+(j.amedas.snow_cm==null?'—':j.amedas.snow_cm+'cm')+
+        '<br><span class="sm-meta">'+esc(j.amedas.time)+' 時点</span></p>';
+    }
+    return h;
+  }
+
+  function init(d){
+    state.data=d;
+    $('sm-gen').textContent = d.generated+' に各スキー場の公式発表を読み取りました';
+    var map=L.map('sm-map',{scrollWheelZoom:false,zoomSnap:0.25}).setView([35.97,136.9],11);
+    L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{maxZoom:18,
+      attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a>'}).addTo(map);
+    var b=[];
+    d.resorts.forEach(function(r){
+      var k=kind(r);
+      var label = r.ok && r.open ? (r.snow_cm!=null?Math.round(r.snow_cm)+'cm':'営業中') : (r.ok?'':'?');
+      var p = PIN[r.id] || {s:r.name, d:'r'};
+      var icon=L.divIcon({className:'',iconSize:[0,0],html:'<div class="'+k+'"><span class="sm-dot"></span><span class="sm-pin '+p.d+'">'+esc(p.s)+(label?'<small>'+label+'</small>':'')+'</span></div>'});
+      var m=L.marker([r.lat,r.lng],{icon:icon,title:r.name}).addTo(map);
+      m.on('click',function(){
+        var el=$('sm-c-'+r.id); if(!el) return;
+        el.scrollIntoView({behavior:'smooth',block:'start'});
+        el.classList.add('hl'); setTimeout(function(){el.classList.remove('hl');},1800);
+      });
+      state.markers[r.id]=m; b.push([r.lat,r.lng]);
+    });
+    // ラベルがはみ出さないよう、地図の幅から縮尺を決める
+    var lons=b.map(function(x){return x[1];}), lats=b.map(function(x){return x[0];});
+    var w=$('sm-map').clientWidth, span=Math.max.apply(null,lons)-Math.min.apply(null,lons);
+    var z=Math.log2(((w-90)/span)*360/256);
+    map.setView([(Math.max.apply(null,lats)+Math.min.apply(null,lats))/2-0.004,(Math.max.apply(null,lons)+Math.min.apply(null,lons))/2-0.02],Math.min(12,Math.floor(z*4)/4),{animate:false});
+    $('sm-jma').innerHTML=jmaBox(d.jma);
+    render();
+  }
+
+  document.querySelectorAll('#snowmap .sm-chip').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var f=btn.getAttribute('data-filter'), s=btn.getAttribute('data-sort');
+      if(f){state.filter=f; document.querySelectorAll('#snowmap [data-filter]').forEach(function(x){x.setAttribute('aria-pressed',x===btn);});}
+      if(s){state.sort=s; document.querySelectorAll('#snowmap [data-sort]').forEach(function(x){x.setAttribute('aria-pressed',x===btn);});}
+      if(state.data) render();
+    });
+  });
+
+  if(window.SNOWMAP_DATA){ init(window.SNOWMAP_DATA); }
+  else fetch(DATA_URL+'?t='+Date.now()).then(function(r){return r.json();}).then(init).catch(function(){
+    $('sm-gen').textContent='データを読み込めませんでした。各スキー場の公式サイトで確認してください。';
+  });
+})();
+</script>
+<p style="font-size:12px;color:#556372;max-width:760px;margin:16px auto">このページはデータ確認用です。<a href="https://tokai-ski-snowboard.com/">東海地方スキー・スノボ情報局</a></p></body></html>
