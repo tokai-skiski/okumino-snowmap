@@ -1,16 +1,16 @@
 {
- "generated": "2026-11-25 15:13",
+ "generated": "2026-11-25 19:34",
  "jma": {
   "forecast": {
-   "report": "2026-11-25 11:00",
+   "report": "2026-11-25 17:00",
    "area": "美濃地方",
-   "weekly_report": "2026-11-25 11:00",
+   "weekly_report": "2026-11-25 17:00",
    "days": [
     {
      "date": "2026-11-25",
-     "code": "201",
-     "text": "くもり 時々 晴れ 所により 夕方 まで 雨か雪 で 雷を伴う",
-     "pop": 20
+     "code": "211",
+     "text": "くもり 夜 晴れ 所により 夕方 雨",
+     "pop": 10
     },
     {
      "date": "2026-11-26",
@@ -22,7 +22,7 @@
      "date": "2026-11-27",
      "code": "201",
      "text": "くもり 時々 晴れ",
-     "pop": 20
+     "pop": 30
     },
     {
      "date": "2026-11-28",
@@ -58,9 +58,9 @@
   },
   "amedas": {
    "name": "長滝(郡上市白鳥町・標高430m)",
-   "time": "2026-11-25 15:00",
-   "temp_c": 4.1,
-   "snow_cm": 17
+   "time": "2026-11-25 19:20",
+   "temp_c": 1.8,
+   "snow_cm": null
   }
  },
  "resorts": [
@@ -74,7 +74,7 @@
    "article": "/ski-area/takasu_dyna/",
    "hotel": "/hotel/takasu-dyna-hotel/",
    "source": "https://www.takasu.gr.jp/condition/",
-   "fetched": "2026-11-25 15:13",
+   "fetched": "2026-11-25 19:34",
    "weather": null,
    "status_text": null,
    "snow_cm": null,
@@ -100,7 +100,7 @@
    "article": "/ski-area/takasu_dyna/",
    "hotel": "/hotel/takasu-dyna-hotel/",
    "source": "https://www.dynaland.co.jp/condition/",
-   "fetched": "2026-11-25 15:13",
+   "fetched": "2026-11-25 19:34",
    "weather": null,
    "status_text": null,
    "snow_cm": null,
@@ -109,7 +109,7 @@
    "lifts_total": 5,
    "courses_open": 0,
    "courses_total": 24,
-   "site_updated": "2026-11-25 AM8:00",
+   "site_updated": "2026-11-25 PM5:00",
    "notice": null,
    "open": false,
    "open_date": "2026-12-05",
@@ -126,7 +126,7 @@
    "article": "/ski-area/washitopia/",
    "hotel": "/hotel/washigatake-hotel/",
    "source": "https://ski.washigatake.jp/condition/",
-   "fetched": "2026-11-25 15:13",
+   "fetched": "2026-11-25 19:34",
    "weather": "小雪",
    "status_text": "一部滑走可",
    "snow_cm": 80.0,
@@ -152,7 +152,7 @@
    "article": "/ski-area/hirugano/",
    "hotel": "/hotel/hotel-by-walk/",
    "source": "https://www.hiruganokogen.com/condition/",
-   "fetched": "2026-11-25 15:13",
+   "fetched": "2026-11-25 19:34",
    "weather": "晴れ",
    "status_text": "滑走不可",
    "snow_cm": null,
@@ -178,7 +178,7 @@
    "article": "/ski-area/washitopia/",
    "hotel": "/hotel/washigatake-hotel/",
    "source": "https://whitepia.jp/operation/",
-   "fetched": "2026-11-25 15:13",
+   "fetched": "2026-11-25 19:34",
    "weather": "晴れ",
    "status_text": null,
    "snow_cm": 0.0,
@@ -195,8 +195,9 @@
     "title": "オープン延期のお知らせ。",
     "url": "https://whitepia.jp/post-1675/"
    },
-   "open_date": "2026-11-28",
+   "open_date": null,
    "open_date_src": "当ブログ調べ・11月23日時点",
+   "open_postponed": true,
    "ok": true
   },
   {
@@ -209,7 +210,7 @@
    "article": "/ski-area/meiho/",
    "hotel": "/hotel/hotel-by-walk/",
    "source": "https://www.meihoski.co.jp/gelande/",
-   "fetched": "2026-11-25 15:13",
+   "fetched": "2026-11-25 19:34",
    "weather": null,
    "status_text": null,
    "snow_cm": 0.0,
@@ -236,7 +237,7 @@
    "article": "/ski-area/winghills/",
    "hotel": "/hotel/hotel-by-walk/",
    "source": "https://winghills.net/snow/coursemap/",
-   "fetched": "2026-11-25 15:13",
+   "fetched": "2026-11-25 19:34",
    "weather": "雪時々くもり",
    "status_text": null,
    "snow_cm": 0.0,
@@ -267,7 +268,7 @@
    "article": "/ski-area/siratori-kougen/",
    "hotel": "/hotel/hotel-by-walk/",
    "source": "https://siratori-k.jp/swp/gelande",
-   "fetched": "2026-11-25 15:13",
+   "fetched": "2026-11-25 19:34",
    "weather": "小雪",
    "status_text": null,
    "snow_cm": 150.0,
