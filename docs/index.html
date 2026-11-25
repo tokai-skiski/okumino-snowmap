@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>奥美濃スキー場 積雪・営業状況マップ(データ確認用)</title><style>body{margin:0;padding:12px 16px;background:#F4F8FC}</style></head><body><!-- 奥美濃スキー場 積雪・営業マップ(試作版) WordPressのカスタムHTMLブロックに貼る想定 -->
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>奥美濃スキー場 積雪・営業状況マップ(データ確認用)</title><style>body{margin:0;padding:12px 16px;background:#F4F8FC}</style></head><body><!-- 奥美濃スキー場 積雪・営業状況マップ ブログの固定ページ(カスタムHTMLブロック)用。元データ:https://github.com/tokai-skiski/okumino-snowmap -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 #snowmap{--sm-ink:#1C2733;--sm-sub:#556372;--sm-line:#DCE6F0;--sm-bg:#fff;--sm-soft:#F4F8FC;--sm-navy:#0B3B66;--sm-pale:#E6F0FA;--sm-cta:#C2410C;--sm-shadow:0 2px 10px rgba(11,59,102,.08);--sm-open:#1a7f4b;--sm-open-bg:#e3f4ea;--sm-closed:#6b7480;--sm-closed-bg:#eef0f3;--sm-warn:#a15c00;--sm-warn-bg:#fff3df;--sm-accent:#1E6FB8;
@@ -265,7 +265,7 @@
 
   function init(d){
     state.data=d;
-    $('sm-gen').textContent = d.generated+' に各スキー場の公式発表を読み取りました';
+    $('sm-gen').style.display='none';
     var map=L.map('sm-map',{scrollWheelZoom:false,zoomSnap:0.25}).setView([35.97,136.9],11);
     L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{maxZoom:18,
       attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a>'}).addTo(map);

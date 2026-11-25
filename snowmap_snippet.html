@@ -265,7 +265,7 @@
 
   function init(d){
     state.data=d;
-    $('sm-gen').textContent = d.generated+' に各スキー場の公式発表を読み取りました';
+    $('sm-gen').style.display='none';
     var map=L.map('sm-map',{scrollWheelZoom:false,zoomSnap:0.25}).setView([35.97,136.9],11);
     L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{maxZoom:18,
       attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a>'}).addTo(map);
