@@ -102,10 +102,15 @@ def table_counts(s, name_word, status_words=('可否', '状況')):
 def notice_from(text):
     """オープン日の告知を探す(「オープン予定」を優先し、なければ「オープン決定」など)。"""
     for kw in (r'(?:オープン|OPEN)予定', r'オープン決定|全面オープン'):
-        m = re.search(r'[^。！!\s]{0,30}(?:' + kw + r')[^。\s]{0,20}', text)
-        if m:
+        for m in re.finditer(r'[^。！!\s]{0,30}(?:' + kw + r')[^。\s]{0,20}', text):
+            # パーク・ナイター・キッズ広場など、一部の施設だけのオープン日は除く
+            if re.search(PART_WORDS, text[max(0, m.start() - 40):m.end()]):
+                continue
             return m.group().strip(' ！!')[:60]
     return None
+
+
+PART_WORDS = r'パーク|PARK|Park|ナイト|ナイター|キッズ|KIDS|Baboon|バブーン|ゴンドラ|限定'
 
 
 def to_iso(text, now):
@@ -339,6 +344,10 @@ def main():
             od = to_iso(item['notice'] if item['notice'] and 'オープン' in item['notice'].upper().replace('OPEN', 'オープン') else None, nowdt)
             item['open_date'] = od or to_iso(r['planned'], nowdt)
             item['open_date_src'] = '公式サイト' if od else '当ブログ調べ・11月23日時点'
+            # 公式のお知らせやトップの告知に「延期」とあれば、予定日は出さない
+            if not item['open'] and '延期' in ((item.get('news') or {}).get('title') or '') + (item['notice'] or ''):
+                item['open_postponed'] = True
+                item['open_date'] = None
             item['ok'] = True
         except Exception as e:
             item['ok'] = False

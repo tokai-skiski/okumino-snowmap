@@ -194,6 +194,7 @@
   function card(r){
     var k=kind(r), note='';
     if(!r.ok) note='<p class="sm-note">いまは数値を読み取れません。公式サイトで確認してください。</p>';
+    else if(!r.open && r.open_postponed) note='<p class="sm-open">オープンは延期になりました。新しい日程は公式サイトで確認してください</p>';
     else if(!r.open && r.open_date){
       var od=new Date(r.open_date+'T00:00:00+09:00'), today=new Date(state.data.generated.slice(0,10)+'T00:00:00+09:00');
       note = od<=today
