@@ -159,6 +159,19 @@ def parse_template(r, B):
                     d['snow_where'] = label.replace('の状況', '')
                 if '気温' in k and num(v) is not None and d.get('temp_c') is None:
                     d['temp_c'] = num(v)
+        # 高鷲・ダイナの新しい作り(2026-11〜):div.weather-wrapper の li.weather / condition / snow / temperature
+        ww = s.select_one('div.weather-wrapper')
+        if ww:
+            def li(cls):
+                return T(ww.select_one('li.' + cls))
+            if not d.get('weather'):
+                d['weather'] = li('weather') or None
+            if not d.get('status_text'):
+                d['status_text'] = li('condition') or None
+            if d.get('snow_cm') is None:
+                d['snow_cm'] = num(li('snow'))
+            if d.get('temp_c') is None:
+                d['temp_c'] = num(li('temperature'))
     d['lifts_open'], d['lifts_total'] = table_counts(s, 'リフト名')
     d['courses_open'], d['courses_total'] = table_counts(s, 'コース名')
     d['notice'] = notice_from(T(s))
