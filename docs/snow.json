@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-28 10:47",
+ "generated": "2026-11-28 11:06",
  "jma": {
   "forecast": {
    "report": "2026-11-28 11:00",
@@ -58,9 +58,9 @@
   },
   "amedas": {
    "name": "長滝(郡上市白鳥町・標高430m)",
-   "time": "2026-11-28 10:40",
-   "temp_c": 7.3,
-   "snow_cm": null
+   "time": "2026-11-28 11:00",
+   "temp_c": 7.2,
+   "snow_cm": 7
   }
  },
  "resorts": [
@@ -74,7 +74,7 @@
    "article": "/ski-area/takasu_dyna/",
    "hotel": "/hotel/takasu-dyna-hotel/",
    "source": "https://www.takasu.gr.jp/condition/",
-   "fetched": "2026-11-28 10:47",
+   "fetched": "2026-11-28 11:06",
    "weather": "曇り",
    "status_text": "滑走不可",
    "snow_cm": null,
@@ -100,7 +100,7 @@
    "article": "/ski-area/takasu_dyna/",
    "hotel": "/hotel/takasu-dyna-hotel/",
    "source": "https://www.dynaland.co.jp/condition/",
-   "fetched": "2026-11-28 10:47",
+   "fetched": "2026-11-28 11:06",
    "weather": "小雨",
    "status_text": "一部滑走可",
    "snow_cm": 60.0,
@@ -126,7 +126,7 @@
    "article": "/ski-area/washitopia/",
    "hotel": "/hotel/washigatake-hotel/",
    "source": "https://ski.washigatake.jp/condition/",
-   "fetched": "2026-11-28 10:47",
+   "fetched": "2026-11-28 11:06",
    "weather": "小雨",
    "status_text": "一部滑走可",
    "snow_cm": 70.0,
@@ -152,7 +152,7 @@
    "article": "/ski-area/hirugano/",
    "hotel": "/hotel/hotel-by-walk/",
    "source": "https://www.hiruganokogen.com/condition/",
-   "fetched": "2026-11-28 10:47",
+   "fetched": "2026-11-28 11:06",
    "weather": "晴れ",
    "status_text": "滑走不可",
    "snow_cm": null,
@@ -178,7 +178,7 @@
    "article": "/ski-area/washitopia/",
    "hotel": "/hotel/washigatake-hotel/",
    "source": "https://whitepia.jp/operation/",
-   "fetched": "2026-11-28 10:47",
+   "fetched": "2026-11-28 11:06",
    "weather": "晴れ",
    "status_text": null,
    "snow_cm": 0.0,
@@ -210,7 +210,7 @@
    "article": "/ski-area/meiho/",
    "hotel": "/hotel/hotel-by-walk/",
    "source": "https://www.meihoski.co.jp/gelande/",
-   "fetched": "2026-11-28 10:47",
+   "fetched": "2026-11-28 11:06",
    "weather": null,
    "status_text": null,
    "snow_cm": 0.0,
@@ -237,7 +237,7 @@
    "article": "/ski-area/winghills/",
    "hotel": "/hotel/hotel-by-walk/",
    "source": "https://winghills.net/snow/coursemap/",
-   "fetched": "2026-11-28 10:47",
+   "fetched": "2026-11-28 11:06",
    "weather": "雨時々雪",
    "status_text": null,
    "snow_cm": 35.0,
@@ -268,7 +268,7 @@
    "article": "/ski-area/siratori-kougen/",
    "hotel": "/hotel/hotel-by-walk/",
    "source": "https://siratori-k.jp/swp/gelande",
-   "fetched": "2026-11-28 10:47",
+   "fetched": "2026-11-28 11:06",
    "weather": "雨",
    "status_text": null,
    "snow_cm": 110.0,
